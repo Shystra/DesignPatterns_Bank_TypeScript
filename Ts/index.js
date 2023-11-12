@@ -1,30 +1,60 @@
 "use strict";
-class ContaBancariaTs {
-    constructor(saldo) {
-        this.saldo = saldo;
+class ContaBancaria {
+    constructor(saldoInicial) {
+        this.saldo = saldoInicial;
     }
     depositar(valor) {
         this.saldo += valor;
+        console.log(`Depósito de R$${valor} realizado com sucesso.`);
     }
     sacar(valor) {
-        if (valor <= this.saldo) {
+        if (this.saldo >= valor) {
             this.saldo -= valor;
-            return valor;
+            console.log(`Saque de R$${valor} realizado com sucesso.`);
         }
-        throw new Error("Saldo Insuficiente");
+        else {
+            throw new Error("Saldo insuficiente para saque.");
+        }
     }
-    pagarConta(valor, tipo) {
-        // Implementação do pagamento de contas
+    obterSaldo() {
+        return this.saldo;
     }
 }
-class ContaCorrenteTs extends ContaBancariaTs {
+class ContaCorrente extends ContaBancaria {
+    constructor(saldoInicial, taxaDeOperacao = 0.01) {
+        super(saldoInicial);
+        this.taxaDeOperacao = taxaDeOperacao;
+    }
+    sacar(valor) {
+        const valorComTaxa = valor * (1 + this.taxaDeOperacao);
+        super.sacar(valorComTaxa);
+    }
 }
-class ContaPoupancaTs extends ContaBancariaTs {
+class ContaPoupanca extends ContaBancaria {
+    constructor(saldoInicial, taxaDeJuros = 0.02) {
+        super(saldoInicial);
+        this.taxaDeJuros = taxaDeJuros;
+    }
+    aplicarJuros() {
+        this.saldo += this.saldo * this.taxaDeJuros;
+        console.log(`Juros de R$${this.saldo * this.taxaDeJuros} aplicados.`);
+    }
 }
-let conta = new ContaBancariaTs(500);
-try {
-    conta.sacar(600); // Isso lançará um erro, pois o saldo é apenas 500
-}
-catch (e) {
-    console.error(e.message); // Isso imprimirá "Saldo insuficiente."
-}
+// Criação das contas
+let contaCorrente = new ContaCorrente(1000, 0.01);
+let contaPoupanca = new ContaPoupanca(1000, 0.02);
+// Polimorfismo: Chama o método sacar, que se comporta de forma diferente dependendo do tipo de conta.
+contaCorrente.sacar(100); // Será aplicada a taxa de operação
+contaPoupanca.sacar(100); // Sem taxa de operação
+// Aplicar juros apenas está disponível para ContaPoupanca
+contaPoupanca.aplicarJuros();
+// Obter saldo - disponível para ambas as contas, comportamento herdado da classe base
+console.log(contaCorrente.obterSaldo());
+console.log(contaPoupanca.obterSaldo());
+
+
+// Neste exemplo, mesmo chamando o mesmo método sacar, o comportamento é diferente dependendo do tipo de conta. 
+// A ContaCorrente leva em consideração uma taxaDeOperacao adicional, enquanto a ContaPoupanca usa a implementação direta da classe base ContaBancaria.
+
+// Além disso, a ContaPoupanca introduz um novo método aplicarJuros, que não existe na ContaBancaria nem na ContaCorrente. 
+// Isso mostra como a herança permite estender e personalizar o comportamento das subclasses.
