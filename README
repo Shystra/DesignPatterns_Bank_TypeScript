@@ -1,0 +1,12 @@
+## A estrutura desenvolvida é apeanas um treino para definir e esclarecer os seguintes conceitos:
+
+### Design Patterns, UML, Polimorfismo e Herança no typescript e javascript...
+
+
+Classes Básicas
+
+ContaBancaria - classe base para diferentes tipos de contas.
+ContaCorrente e ContaPoupanca - subclasses que herdam de ContaBancaria.
+Polimorfismo e Herança
+
+Métodos como depositar, sacar e pagarConta serão definidos na classe ContaBancaria e podem ser sobrescritos nas subclasses se necessário.
